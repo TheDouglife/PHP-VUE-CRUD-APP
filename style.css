@@ -1,0 +1,58 @@
+
+
+div#root {
+}
+
+.modal-mask {
+	position: fixed;
+	z-index: 9998;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, .5);
+	display: table;
+	transition: opacity .3s ease;
+  }
+  
+  .modal-wrapper {
+	display: table-cell;
+	vertical-align: middle;
+  }
+
+
+/*** Navbar Styles ***/
+
+.navbar-toggler {
+	border:1px solid #FFF;
+}
+
+  @media (max-width: 768px) {
+    .navbar-collapse {
+        position: fixed;
+        top: 54px;
+        left: 0;
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-bottom: 15px;
+        width: 80%;
+        min-height: 100vh;
+        background-color: white;
+z-index: 10000;
+    }
+    .navbar-collapse.collapsing {
+        height: auto;
+        -webkit-transition: left 0.3s ease;
+        -o-transition: left 0.3s ease;
+        -moz-transition: left 0.3s ease;
+        transition: left 0.3s ease;
+        left: -100%;
+    }
+    .navbar-collapse.show {
+        left: 0;
+        -webkit-transition: left 0.3s ease-in;
+        -o-transition: left 0.3s ease-in;
+        -moz-transition: left 0.3s ease-in;
+        transition: left 0.3s ease-in;
+    }
+}

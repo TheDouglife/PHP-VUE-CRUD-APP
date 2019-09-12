@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CPM Contacts</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="style.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.min.js"></script>
+</head>
+<body>
+<div id="root">
+<!-- Nav Menu -->
+<navbar-component></navbar-component>
+<div class="container">
+	 <page-heading-component></page-heading-component>
+	 <staff-list-component></staff-list-component>
+ </div>
+
+<div class="row">
+<div class="col-sm-5 my-3">
+		<div class="panel-body">
+				<input type="text" class="form-control" id="dev-table-filter" data-action="filter" data-filters="#dev-table" placeholder="Filter Contacts" />
+			</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<div class="errorMessage alert alert-danger" v-if="errorMessage" role="alert">{{errorMessage}}</div>
+<div class="successMessage alert alert-success" v-if="successMessage" role="alert">{{successMessage}}</div>
+</div>
+<div class="col-sm-12"><button class="btn btn-primary" @click="showingModal = true;">Add New</button></div>
+</div>
+<div class="row">
+<table class="table table-hover table-responsive" id="dev-table">
+<thead class="thead-dark">
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Business Name</th>
+					<th scope="col">First Name</th>
+					<th scope="col">Last Name</th>
+					<th scope="col">Title</th>
+					<th scope="col">Phone Number</th>
+					<th scope="col">Email</th>
+					<th scope="col">Mailing Address</th>
+					<th scope="col">State</th>
+					<th scope="col">City</th>
+					<th scope="col">Zip Code</th>
+					<th scope="col">Edit</th>
+					<th scope="col">Delete</th>
+				</thead>
+				</tr>
+				<tr v-for="user in users">
+					<td>{{user.id}}</td>
+					<td>{{user.business}}</td>
+					<td>{{user.firstname}}</td>
+					<td>{{user.lastname}}</td>
+					<td>{{user.title}}</td>
+					<td>{{user.phone}}</td>
+					<td>{{user.email}}</td>
+					<td>{{user.address}}</td>
+					<td>{{user.state}}</td>
+					<td>{{user.city}}</td>
+					<td>{{user.zipcode}}</td>
+					<td><button @click="showingeditModal = true; selectUser(user)" class="btn btn-link"><i class="far fa-edit"></i></button></td>
+					<td><button @click="showingdeleteModal = true; selectUser(user)" class="btn btn-link"><i class="far fa-trash-alt"></i></button></td>
+				</tr>
+			</table>
+		</div>
+<!-- Add Modal Component -->
+<div id="addmodal" v-if="showingModal">
+	<transition name="modal">
+	<div class="modal-mask">
+	<div class="modal-wrapper">		
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Add Contact</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true" @click="showingModal = false;">&times;</span>
+				</button>
+				</div>
+								<div class="modal-body">
+										<table class="table table-hover">
+											<tr>
+												<th>Business Name</th>
+												<td><input type="text" placeholder="Business Name" v-model="newUser.business"></td>
+											</tr>
+											<tr>
+												<th>First Name</th>
+												<td><input type="text" placeholder="First Name" v-model="newUser.firstname"></td>
+											</tr>
+											<tr>
+												<th>Last Name</th>
+												<td><input type="text" placeholder="Last Name" v-model="newUser.lastname"></td>
+											</tr>
+											<tr>
+												<th>Title</th>
+												<td><input type="text" placeholder="Title" v-model="newUser.title"></td>
+											</tr>
+											<tr>
+												<th>Phone Number</th>
+												<td><input type="text" placeholder="Phone Number" v-model="newUser.phone"></td>
+											</tr>
+											<tr>
+												<th>Email Address</th>
+												<td><input type="text" placeholder="Email Address" v-model="newUser.email"></td>
+											</tr>
+											<tr>
+												<th>Mailing Address</th>
+												<td><input type="text" placeholder="Mailing Address" v-model="newUser.address"></td>
+											</tr>
+											<tr>
+												<th>State</th>
+												<td><input type="text" placeholder="State" v-model="newUser.state"></td>
+											</tr>
+											<tr>
+												<th>City</th>
+												<td><input type="text" placeholder="City" v-model="newUser.city"></td>
+											</tr>
+											<tr>
+												<th>Zip Code</th>
+												<td><input type="text" placeholder="Zip Code" v-model="newUser.zipcode"></td>
+											</tr>
+										</table>
+								</div>
+								<div class="modal-footer">
+				<button class="center"  @click="showingModal = false; saveUser();" >Add User</button>
+								</div>
+							</div>
+						</div>
+				
+						</div>
+					  </div>
+					</transition>
+				  </div>
+
+<!-- Edit Modal Component -->
+<div id="editmodal" v-if="showingeditModal">
+		<transition name="modal">
+		<div class="modal-mask">
+		<div class="modal-wrapper">		
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Edit Contact</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true" @click="showingeditModal = false;">&times;</span>
+					</button>
+					</div>
+									<div class="modal-body">
+											<table class="table table-hover">
+													<tr>
+															<th>Business Name</th>
+															<td><input type="text" placeholder="Business Name" v-model="newUser.business"></td>
+														</tr>
+												<tr>
+													<th>First Name</th>
+													<td><input type="text" placeholder="First Name" v-model="clickedUser.firstname"></td>
+												</tr>
+												<tr>
+													<th>Last Name</th>
+													<td><input type="text" placeholder="Last Name" v-model="clickedUser.lastname"></td>
+												</tr>
+												<tr>
+													<th>Title</th>
+													<td><input type="text" placeholder="Title" v-model="clickedUser.title"></td>
+												</tr>
+												<tr>
+													<th>Phone Number</th>
+													<td><input type="text" placeholder="Phone Number" v-model="clickedUser.phone"></td>
+												</tr>
+												<tr>
+													<th>Email Address</th>
+													<td><input type="text" placeholder="Email Address" v-model="clickedUser.email"></td>
+												</tr>
+												<tr>
+													<th>Mailing Address</th>
+													<td><input type="text" placeholder="Mailing Address" v-model="clickedUser.address"></td>
+												</tr>
+												<tr>
+													<th>State</th>
+													<td><input type="text" placeholder="State" v-model="clickedUser.state"></td>
+												</tr>
+												<tr>
+													<th>City</th>
+													<td><input type="text" placeholder="City" v-model="clickedUser.city"></td>
+												</tr>
+												<tr>
+													<th>Zip Code</th>
+													<td><input type="text" placeholder="Zip Code" v-model="clickedUser.zipcode"></td>
+												</tr>
+											</table>
+									</div>
+									<div class="modal-footer">
+					<button class="btn btn-primary"  @click="showingeditModal = false; updateUser();" >Edit User</button>
+									</div>
+								</div>
+							</div>
+					
+							</div>
+						  </div>
+						</transition>
+					  </div>
+
+<!-- Delete Modal Component -->
+
+<div id="deletemodal" v-if="showingdeleteModal">
+		<transition name="modal">
+		<div class="modal-mask">
+		<div class="modal-wrapper">		
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Delete Contact</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true" @click="showingdeleteModal = false;">&times;</span>
+					</button>
+					</div>
+									<div class="modal-body">
+							<h3 class="text-center">Are you sure to Delete?</h3>
+							<h4 class="text-center">{{clickedUser.username}}</h4>
+								<button class="left" @click="showingdeleteModal = false; deleteUser()">YES</button>
+								<button class="right" @click="showingdeleteModal = false;">NO</button>
+									</div>
+									<div class="modal-footer">
+					<button class="center"  @click="showingdeleteModal = false; saveUser();" >Delete User</button>
+									</div>
+								</div>
+							</div>
+					
+							</div>
+						  </div>
+						</transition>
+					  </div>
+
+<!-- Footer -->
+		</div>
+	</div>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+	<script type="text/javascript" src="app.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/e76e529810.js"></script>
+<script src="/custom.js"></script>
+</body>
+</html>
