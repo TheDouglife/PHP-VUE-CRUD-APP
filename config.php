@@ -2,8 +2,8 @@
 /* Database credentials. Assuming you are running MySQL
 server with default setting (user 'root' with no password) */
 define('DB_SERVER', '127.0.0.1');
-define('DB_USERNAME', 'goliath');
-define('DB_PASSWORD', 'CPM2020safe');
+define('DB_USERNAME', '');
+define('DB_PASSWORD', '');
 define('DB_NAME', 'users');
  
 /* Attempt to connect to MySQL database */
